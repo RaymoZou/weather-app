@@ -3,18 +3,11 @@ import * as weatherAPI from "./weatherAPI.js";
 const form = document.getElementById("submit-form");
 const locationInput = document.querySelector('#submit-form input');
 const cardContainer = document.querySelector('.card-container')
-
 const header = document.getElementById("header");
 
 form.onsubmit = function(event) {
     event.preventDefault();
-    // printWeather();
     renderWeather();
-}
-
-async function printWeather() {
-    const weatherData = await weatherAPI.getCurrentWeather(locationInput.value);
-    console.log(weatherData);
 }
 
 async function renderWeather() {
