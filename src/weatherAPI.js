@@ -3,7 +3,7 @@ async function getWeeklyForecast(location) {
     try {
         const cityCoords = await getCoords(location);
         const weatherDays = [];
-        const cityName = await fetch(`http://api.openweathermap.org/geo/1.0/reverse?lat=${cityCoords[0].lat}&lon=${cityCoords[0].lon}&limit=1&appid=af89899d870ab5f02a09bfa241e01353`)
+        const cityName = await fetch(`https://api.openweathermap.org/geo/1.0/reverse?lat=${cityCoords[0].lat}&lon=${cityCoords[0].lon}&limit=1&appid=af89899d870ab5f02a09bfa241e01353`)
                                 .then(data => data.json()).then(data => data[0].name)
         const data = await fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${cityCoords[0].lat}&lon=${cityCoords[0].lon}&cnt=7&appid=af89899d870ab5f02a09bfa241e01353`);
         const JSONdata = await data.json();
