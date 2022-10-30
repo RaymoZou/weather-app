@@ -32,7 +32,7 @@ function createCard(temperature, description, iconCode) {
     icon.classList.add('card-icon');
     temp.textContent = `${temperature}°C`;
     desc.textContent = description;
-    icon.src = `http://openweathermap.org/img/wn/${iconCode}@2x.png`;
+    icon.src = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
     weatherCard.append(icon);
     weatherCard.append(temp);
     weatherCard.append(desc);
