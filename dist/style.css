@@ -5,7 +5,7 @@
 
 .container {
     display: grid;
-    grid-template-rows: 1fr 3fr;
+    grid-template-rows: 200px 3fr;
 }
 
 .card-container {
@@ -26,6 +26,21 @@
     background-color: darkgrey;
     width: 100%;
     height: 500px;
+}
+
+.form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-container input {
+    font-size: 36px;
+}
+
+.form-container button {
+    font-size: 24px;
+    padding: 4px;
 }
 
 .weather-card .card-date {
