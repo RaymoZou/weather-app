@@ -43,10 +43,10 @@ body {
     border-radius: 8px;
     border: none;
     padding: 8px;
+    border: 2px solid black;
 }
 
 .form-container input:focus {
-    border: none;
     outline: none;
 }
 
