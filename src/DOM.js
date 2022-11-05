@@ -34,6 +34,7 @@ function createCard(temperature, description, iconCode, dayofWeek) {
     temp.classList.add('card-temp');
     desc.classList.add('card-desc');
     icon.classList.add('card-icon');
+    date.classList.add('card-date');
     temp.textContent = `${temperature}°C`;
     desc.textContent = description;
     icon.src = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
