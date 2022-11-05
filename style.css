@@ -4,7 +4,7 @@
 }
 
 body {
-    background-color: #406882;
+    background-color: #6998AB;
 }
 
 .container {
@@ -28,7 +28,7 @@ body {
     align-items: center;
     border-radius: 8px;
     background-color: rgba(0,0,0,0.1);
-    padding: 8px;
+    padding: 48px 8px;
     border-radius: 8px;
 }
 
@@ -61,6 +61,7 @@ body {
 }
 
 .weather-container .header {
+    color: white;
     padding: 16px;
     display: flex;
     justify-content: start;
