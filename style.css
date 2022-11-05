@@ -28,8 +28,14 @@
     height: 500px;
 }
 
+.weather-card .card-date {
+    color: black;
+    font-size: 36px;
+}
+
 .weather-container .header {
+    padding: 16px;
     display: flex;
-    justify-content: center;
+    justify-content: start;
     font-size: 72px;
 }
