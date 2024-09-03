@@ -20,6 +20,7 @@ function App() {
     // populate city on success and cache result in localStorage
     async function fetchData() {
         // attempt localStorage retrieval
+        setCity(null);
         const data = localStorage.getItem(query);
         if (data) {
             const parsedCity: City = JSON.parse(data);
@@ -69,16 +70,11 @@ function App() {
     // renders a loading animation if request is pending
     // renders an error text message if request failed
     function renderWeather(): JSX.Element {
-        // pending request
-        if (!response) {
-            return <CircularProgress />
-        }
 
-        // successful request
-        if (response.ok) {
+        // success (either through localStorage or API request)
+        if (city) {
             return (
                 <>
-                    <Typography variant="h1">Weather App</Typography>
                     <Typography>City: {city?.name}</Typography>
                     <Typography>Temperature: {city?.temperature}</Typography>
                     <Typography>Humidity: {city?.humidity}</Typography>
@@ -87,6 +83,12 @@ function App() {
             )
         }
 
+        // pending
+        if (!response) {
+            return <CircularProgress />
+        }
+
+        // invalid city query
         if (response.status == 404) {
             return <Alert variant="outlined" severity="error">City not found!</Alert>
         }
@@ -98,6 +100,7 @@ function App() {
     return (
         <>
             <Stack spacing={2} sx={{ alignItems: "center" }}>
+                <Typography variant="h1">Weather App</Typography>
                 {renderWeather()}
                 <TextField
                     variant="outlined"
