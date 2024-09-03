@@ -3,6 +3,7 @@ import { Button, TextField, Stack, Typography, CircularProgress, Alert } from "@
 
 // weather data structure for a given City
 type City = {
+    expiration: number, // expiration time of 1 hour from when request was made
     name: string, // name of the city
     temperature: number, // in Kelvin
     humidity: number,
@@ -16,9 +17,20 @@ function App() {
     const [response, setResponse] = useState<Response | null>(null); // current status of request
 
     // make API call for 1-day weather forecast for city using Current Weather Data API
-    // populate city on success and
-    // TODO: cache result in localStorage
+    // populate city on success and cache result in localStorage
     async function fetchData() {
+        // attempt localStorage retrieval
+        const data = localStorage.getItem(query);
+        if (data) {
+            const parsedCity: City = JSON.parse(data);
+
+            if (new Date().getTime() < parsedCity.expiration) {
+                setCity(parsedCity);
+                return
+            }
+        }
+
+        // api request if localStorage retrieval fails
         setResponse(null);
         const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${query}&appid=${import.meta.env.VITE_API_KEY}`)
         setResponse(response);
@@ -26,17 +38,31 @@ function App() {
         // 200 - success
         if (response.status == 200) {
             const data = await response.json();
-            setCity({
+            const city: City = {
+                expiration: new Date().getTime() + 60 * 60 * 1000, // 1 hour expiration
                 name: data.name,
                 temperature: data.main.temp,
                 humidity: data.main.humidity,
                 description: data.weather[0].description
-            })
+            }
+            setCity(city)
+            // cache data in local storage
+            cacheCity(query, JSON.stringify(city))
         }
     }
 
     function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-        setQuery(event.target.value);
+        setQuery(event.target.value.toLowerCase());
+    }
+
+    // caches weather data in string format for a city in brower's localStorage
+    function cacheCity(key: string, data: string) {
+        localStorage.setItem(key, data);
+    }
+
+    // clears the browser localStorage
+    function clearCache() {
+        localStorage.clear();
     }
 
     // renders weather data if request was successful
@@ -83,6 +109,12 @@ function App() {
                     onClick={fetchData}
                     className="btn btn-primary">
                     Get Weather
+                </Button>
+                <Button
+                    variant="outlined"
+                    onClick={clearCache}
+                    className="btn btn-primary">
+                    Clear Cache
                 </Button>
             </Stack>
         </>
