@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Button, TextField, Stack, Typography } from "@mui/material";
+import React, { useState } from "react";
+import { Button, TextField, Stack, Typography, CircularProgress } from "@mui/material";
 
 // weather data structure for a given City
 type City = {
@@ -9,28 +9,25 @@ type City = {
     description: string
 }
 
-// placeholder for weather data
-// const Vancouver: City = {
-//     name: "Vancouver",
-//     temperature: 12,
-//     humidity: 13,
-//     description: "always raining..."
-// }
-
 function App() {
 
-    const [city, setCity] = useState<City | null>(null)
-    const [query, setQuery] = useState<string>("");
+    const [city, setCity] = useState<City | null>(null) // weather data for city
+    const [query, setQuery] = useState<string>(""); // city name to be queried
+    const [status, setStatus] = useState<number | null>(null); // current status of request, null is pending
 
     // make API call for 1-day weather forecast for city using Current Weather Data API
     async function fetchData() {
+        setStatus(null);
         const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${query}&appid=${import.meta.env.VITE_API_KEY}`)
+        setStatus(response.status);
 
-        if (!response.ok) {
-            // TODO: handle error
-            return
+        // 404 - not found
+        if (response.status == 404) {
+            console.error("City not found!")
+            return;
         }
 
+        // 200 - success
         const data = await response.json();
         setCity({
             name: data.name,
@@ -46,11 +43,18 @@ function App() {
 
     return (
         <>
-            <Stack>
-                <Typography>City: {city?.name}</Typography>
-                <Typography>Temperature: {city?.temperature}</Typography>
-                <Typography>Humidity: {city?.humidity}</Typography>
-                <Typography>Description: {city?.description}</Typography>
+            <Stack spacing={2} sx={{ alignItems: "center" }}>
+                {status ? (
+                    <>
+                        <Typography variant="h1">Weather App</Typography>
+                        <Typography>City: {city?.name}</Typography>
+                        <Typography>Temperature: {city?.temperature}</Typography>
+                        <Typography>Humidity: {city?.humidity}</Typography>
+                        <Typography>Description: {city?.description}</Typography>
+                    </>
+                ) : (
+                    <CircularProgress />
+                )}
                 <TextField
                     variant="outlined"
                     onChange={handleChange}
