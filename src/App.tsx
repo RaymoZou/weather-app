@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, TextField, Stack, Typography, CircularProgress, Alert } from "@mui/material";
+import { Button, TextField, Stack, Typography, CircularProgress, Alert, AlertTitle } from "@mui/material";
 
 // weather data structure for a given City
 type City = {
@@ -90,11 +90,22 @@ function App() {
 
         // invalid city query
         if (response.status == 404) {
-            return <Alert variant="outlined" severity="error">City not found!</Alert>
+            return (
+                <Alert variant="outlined" severity="error">
+                    <AlertTitle>Error</AlertTitle>
+                    City not found!
+                </Alert>
+            )
         }
 
         // catch all other errors
-        return <Typography>Oops! There was an error...</Typography>
+        return (
+            <Alert variant="outlined" severity="error">
+                <AlertTitle>Error</AlertTitle>
+                {response.statusText}
+            </Alert>
+        )
+
     }
 
     return (
