@@ -1,4 +1,5 @@
-import { useState } from "react"
+import { useState } from "react";
+import { Button, TextField, Stack, Typography } from "@mui/material";
 
 // weather data structure for a given City
 type City = {
@@ -30,7 +31,7 @@ function App() {
             return
         }
 
-        var data = await response.json();
+        const data = await response.json();
         setCity({
             name: data.name,
             temperature: data.main.temp,
@@ -45,19 +46,23 @@ function App() {
 
     return (
         <>
-            <h1>name: {city?.name}</h1>
-            <p>temp: {city?.temperature}</p>
-            <p>humidity: {city?.humidity}</p>
-            <p>desc: {city?.description}</p>
-            <input
-                onChange={handleChange}
-                placeholder="City Name"
-            />
-            <button
-                onClick={fetchData}
-                className="btn btn-primary">
-                Get Weather
-            </button>
+            <Stack>
+                <Typography>City: {city?.name}</Typography>
+                <Typography>Temperature: {city?.temperature}</Typography>
+                <Typography>Humidity: {city?.humidity}</Typography>
+                <Typography>Description: {city?.description}</Typography>
+                <TextField
+                    variant="outlined"
+                    onChange={handleChange}
+                    placeholder="City Name"
+                />
+                <Button
+                    variant="contained"
+                    onClick={fetchData}
+                    className="btn btn-primary">
+                    Get Weather
+                </Button>
+            </Stack>
         </>
     )
 }
