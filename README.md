@@ -11,3 +11,13 @@ A simple weather React + TypeScript app that shows the weather for a given city 
 VITE_API_KEY={YOUR_SECRET_KEY_HERE} // OpenWeatherMap API key
 ```
 4. Start development server with `npm run dev`:
+
+## Features:
+
+- Minimalistic UI created using the Material UI component library - one of the reasons for choosing this library is that it offers pre-built React components such as buttons and input fields which allow for rapid prototyping. 
+- 5-day weather forecast
+- Local browser storage utilization for efficient data fetching
+
+## Preview:
+
+[Preview](demo.png)
