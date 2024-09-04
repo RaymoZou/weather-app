@@ -1,54 +1,64 @@
 import React, { useState } from "react";
 import { Button, TextField, Stack, Typography, CircularProgress, Alert, AlertTitle } from "@mui/material";
+import DayWeather from "./WeatherData";
 
-// weather data structure for a given City
-type City = {
+interface DayWeather {
+    temperature: number, // temperature in Farenheight
+    humidity: number, // expressed as a percentage
+    description: string // short description of weather
+    icon: string // icon weather code
+}
+
+interface ForecastData {
     expiration: number, // expiration time of 1 hour from when request was made
     name: string, // name of the city
-    temperature: number, // in Kelvin
-    humidity: number,
-    description: string
+    forecast: DayWeather[]; // 5 day forecast
 }
 
 function App() {
 
-    const [city, setCity] = useState<City | null>(null) // weather data for city
+    const [forecast, setForecast] = useState<ForecastData | null>(null) // current forecast
     const [query, setQuery] = useState<string>(""); // city name to be queried
     const [response, setResponse] = useState<Response | null>(null); // current status of request
 
-    // make API call for 1-day weather forecast for city using Current Weather Data API
-    // populate city on success and cache result in localStorage
+    // populate forecast state through localStorage or API call
     async function fetchData() {
-        // attempt localStorage retrieval
-        setCity(null);
+        // localStorage request
+        setForecast(null);
         const data = localStorage.getItem(query);
         if (data) {
-            const parsedCity: City = JSON.parse(data);
+            const parsedForecast: ForecastData = JSON.parse(data);
 
-            if (new Date().getTime() < parsedCity.expiration) {
-                setCity(parsedCity);
+            if (new Date().getTime() < parsedForecast.expiration) {
+                setForecast(parsedForecast);
                 return
             }
         }
 
-        // api request if localStorage retrieval fails
+        // API request
         setResponse(null);
-        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${query}&appid=${import.meta.env.VITE_API_KEY}`)
+        const response = await fetch(`http://api.openweathermap.org/data/2.5/forecast?q=${query}&appid=${import.meta.env.VITE_API_KEY}&cnt=5&units=imperial`)
         setResponse(response);
 
         // 200 - success
-        if (response.status == 200) {
+        if (response.ok) {
             const data = await response.json();
-            const city: City = {
+            const forecast: DayWeather[] = [];
+            data.list.forEach((weather: any) => {
+                forecast.push({
+                    temperature: weather.main.temp,
+                    humidity: weather.main.humidity,
+                    description: weather.weather[0].description,
+                    icon: weather.weather[0].icon
+                })
+            })
+            const newForecast: ForecastData = {
                 expiration: new Date().getTime() + 60 * 60 * 1000, // 1 hour expiration
-                name: data.name,
-                temperature: data.main.temp,
-                humidity: data.main.humidity,
-                description: data.weather[0].description
+                name: data.city.name,
+                forecast: forecast
             }
-            setCity(city)
-            // cache data in local storage
-            cacheCity(query, JSON.stringify(city))
+            setForecast(newForecast)
+            cacheForecast(query, JSON.stringify(newForecast)) // cache data in local storage
         }
     }
 
@@ -57,7 +67,7 @@ function App() {
     }
 
     // caches weather data in string format for a city in brower's localStorage
-    function cacheCity(key: string, data: string) {
+    function cacheForecast(key: string, data: string) {
         localStorage.setItem(key, data);
     }
 
@@ -72,20 +82,32 @@ function App() {
     function renderWeather(): JSX.Element {
 
         // success (either through localStorage or API request)
-        if (city) {
+        if (forecast) {
             return (
                 <>
-                    <Typography>City: {city?.name}</Typography>
-                    <Typography>Temperature: {city?.temperature}</Typography>
-                    <Typography>Humidity: {city?.humidity}</Typography>
-                    <Typography>Description: {city?.description}</Typography>
+                    <Typography variant="h2">{forecast.name}</Typography>
+                    <Stack
+                        direction="row"
+                        spacing={2}
+                    >
+                        {forecast.forecast.map((item, key) => (
+                            <DayWeather
+                                key={key}
+                                props={item}
+                            />
+                        ))}
+                    </Stack>
                 </>
             )
         }
 
         // pending
         if (!response) {
-            return <CircularProgress />
+            if (!forecast) {
+                return <Typography variant="h3">Enter a city</Typography>;
+            } else {
+                return <CircularProgress />
+            }
         }
 
         // invalid city query
