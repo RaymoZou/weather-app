@@ -10,7 +10,7 @@ A simple weather React + TypeScript app that shows the weather for a given city 
 ```
 VITE_API_KEY={YOUR_SECRET_KEY_HERE} // OpenWeatherMap API key
 ```
-4. Start development server with `npm run dev`:
+4. Use `npm run dev` to start the development server on default port 5173
 
 ## Features:
 
